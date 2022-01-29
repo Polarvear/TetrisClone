@@ -33,3 +33,6 @@ body{ /*이렇게 하면 넘치는 부분에 스크롤이 생기지 않음*/
     height: 25px;
     outline: 1px solid #ccc;
 }
+.tree{
+    background: #67c23a;
+}
