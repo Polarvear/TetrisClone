@@ -59,7 +59,7 @@ function prependNewLine() {
 }
 function renderBlocks() { // 블럭 그림
     const { type, direction, top, left} = tempMovingItem // 각각의 프로퍼티들을 변수로 바로 사용할 수 있도록 해줌
-    const movingBlocks = document.querySelectorAll("moving")
+    const movingBlocks = document.querySelectorAll(".moving")
     movingBlocks.forEach(moving => {
         moving.classList.remove(type, "moving") // 기존의 있었던 애들을 없애줌
     })
@@ -85,9 +85,9 @@ document.addEventListener("keydown", e => { // keycode 추출
     switch(e.keyCode) { // switch 문을 통해서 각각의 형태 설정
         case 39 :
             moveBlock("left", 1);
-            break
+            break;
         case 37 :
-            moveBlock("left", -1)
+            moveBlock("left", -1);
         default :
             break;
     }
