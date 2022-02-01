@@ -14,10 +14,10 @@ let tempMovingItem; //movingItem을 사용하기 전에 잠깐 담아두는 용�
 
 const BLOCKS = {
     tree: [
-        [[2,1],[0,1],[1,0],[1,1]], // 좌표값
-        [],
-        [],
-        [],
+        [[2,1],[0,1],[1,0],[1,1]], // 좌표값 tree라는 블럭의 각각의 모양 상태
+        [[1,2],[0,1],[1,0],[1,1]], //direction 상태에 따라서 달라짐
+        [[1,2],[0,1],[2,1],[1,1]],
+        [[2,1],[1,2],[1,0],[1,1]],
     ]
 
 }
@@ -25,9 +25,9 @@ const BLOCKS = {
 
 const movingItem = { //원복용/ 실질적으로 다음 아이템의 타입과 좌표 등의 정보를 가지고 있음
     type: "tree", // 얘가 블럭의 형태를 가져옴 ex) tree
-    direction: 0, //화살표로 돌리는 용도
+    direction: 2, //화살표로 돌리는 용도
     top: 0, // 좌표기준으로 어디인지 상하
-    left: 3, // 좌우값을 알려주는 기능
+    left: 0, // 좌우값을 알려주는 기능
 }
 
 //처음에 랜더링이 되면 init을 호출하는 방식
@@ -69,9 +69,36 @@ function renderBlocks() { // 블럭 그림
         const x = block[0] + left// ul안의 li의 값
         const y = block[1] + top// li의 low값
         //console.log({playground}) // 출력 NodeList있음
-        const target = playground.childNodes[y].childNodes[0].childNodes[x]
-        target.classList.add(type)
+        // 삼항연산자도 변수에 담을 수 있음
+        const target = playground.childNodes[y] ? playground.childNodes[y].childNodes[0].childNodes[x] : null
+        //타겟의 상태에 대해서 체크하는 용도
+        const isAvailable = checkEmpty(target)
+        if (isAvailable) {
+            target.classList.add(type, "moving")// 타겟의 상태가 ture일 때만 새로운 블럭 추가
+        } else {
+            tempMovingItem = {...movingItem} // false의 경우
+            setTimeout(() => { //이벤트 스택이 넘쳐버리는 걸 방지 call stack size exceeded 방지
+                renderBlocks()
+                if (moveType === "top") { //떨어지는 중에 없는 화면으로 나가버리면
+                    seizeBlock() // 고정시키는 함수실행
+                }
+            },0)// task queue로 잠깐 빼놓음
+            // renderBlocks()// 재귀함수로 호출 그러나 콜스택 맥시멈, 액시드 같은 경우가 발생할 수 있으므로 settimeout으로 잠깐 처리
+        }
+
     }) // 좌표를 가진 애들을 가져와서 forEach 적용
+    movingItem.left = left //render 가 성공할 때마다 고정시켜줌
+    movingItem.top = top
+    movingItem.direction = direction
+}
+function seizeBlock() { // 더이상 내려갈 곳이 없을 때 블럭에서 moving 을 떼버리고 새로운 블럭을 만들어 줄 것임
+    console.log('seizeBlock')
+}
+function checkEmpty(target) { // ture or false 를 담아줌
+    if(!target) {
+        return false;
+    }
+    return true;
 }
 
 function moveBlock(moveType, amount) {
@@ -88,6 +115,10 @@ document.addEventListener("keydown", e => { // keycode 추출
             break;
         case 37 :
             moveBlock("left", -1);
+            break;
+        case 40:
+            moveBlock("top", 1);
+            break;
         default :
             break;
     }
