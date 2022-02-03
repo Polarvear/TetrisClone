@@ -1,4 +1,6 @@
 //DOM
+import BLOCKS from "./blocks.js"
+
 
 const playground = document.querySelector(".playground > ul")
 
@@ -12,15 +14,7 @@ let duration = 500
 let downIntervla;
 let tempMovingItem; //movingItem을 사용하기 전에 잠깐 담아두는 용도로 사용
 
-const BLOCKS = {
-    tree: [
-        [[2,1],[0,1],[1,0],[1,1]], // 좌표값 tree라는 블럭의 각각의 모양 상태
-        [[1,2],[0,1],[1,0],[1,1]], //direction 상태에 따라서 달라짐
-        [[1,2],[0,1],[2,1],[1,1]],
-        [[2,1],[1,2],[1,0],[1,1]],
-    ]
 
-}
 
 
 const movingItem = { //원복용/ 실질적으로 다음 아이템의 타입과 좌표 등의 정보를 가지고 있음
@@ -101,7 +95,7 @@ function seizeBlock() { // 더이상 내려갈 곳이 없을 때 블럭에서 mo
     generateNewBlock()
 }
 function generateNewBlock() { // seized끝나면 새로운 블럭이 생기게 됨
-    movingItem.type = 0
+    movingItem.top = 0
     movingItem.left = 3 // 가운데 와야하므로 3
     movingItem.direction = 0
     tempMovingItem = {...movingItem}
