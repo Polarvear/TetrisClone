@@ -95,6 +95,9 @@ function seizeBlock() { // 더이상 내려갈 곳이 없을 때 블럭에서 mo
     generateNewBlock()
 }
 function generateNewBlock() { // seized끝나면 새로운 블럭이 생기게 됨
+    const blockArray = Object.entries(BLOCKS)
+    const randomIndex = Math.floor(Math.random() * blockArray.length)
+    movingItem.type = blockArray[randomIndex][0]// type을 랜덤으로 생성하겠다
     movingItem.top = 0
     movingItem.left = 3 // 가운데 와야하므로 3
     movingItem.direction = 0
