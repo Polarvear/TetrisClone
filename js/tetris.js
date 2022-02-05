@@ -18,7 +18,7 @@ let tempMovingItem; //movingItem을 사용하기 전에 잠깐 담아두는 용�
 
 
 const movingItem = { //원복용/ 실질적으로 다음 아이템의 타입과 좌표 등의 정보를 가지고 있음
-    type: "tree", // 얘가 블럭의 형태를 가져옴 ex) tree
+    type: "", // 얘가 블럭의 형태를 가져옴 ex) tree
     direction: 2, //화살표로 돌리는 용도
     top: 0, // 좌표기준으로 어디인지 상하
     left: 0, // 좌우값을 알려주는 기능
@@ -36,7 +36,9 @@ function init() {
     for (let i = 0; i < 20; i++) {
         prependNewLine()
     }// 처리가 다 끝났으면
-    renderBlocks()
+    generateNewBlock()// 이제 랜덤하게 생성해줄 거임
+    //renderBlocks()
+
 }
 
 
@@ -95,6 +97,12 @@ function seizeBlock() { // 더이상 내려갈 곳이 없을 때 블럭에서 mo
     generateNewBlock()
 }
 function generateNewBlock() { // seized끝나면 새로운 블럭이 생기게 됨
+
+    clearInterval(downIntervla) // 기존에 downIntervla있다면 clear 해줌
+    downIntervla = setInterval(() => {
+        moveBlock('top', 1)
+    },duration)
+
     const blockArray = Object.entries(BLOCKS)
     const randomIndex = Math.floor(Math.random() * blockArray.length)
     movingItem.type = blockArray[randomIndex][0]// type을 랜덤으로 생성하겠다
@@ -127,6 +135,12 @@ function changeDirection() {
     // } // 변수들이 반복되니까 가독성이 떨어지므로 삼항연산자에 담을 것임
     renderBlocks()
 }
+function dropBlock() { // 스페이스바를 누르면 한번에 내려오는 기능
+    clearInterval(downIntervla)
+    downIntervla = setInterval(() => {
+        moveBlock("top", 1)
+    }, 10) // 속도를 엄청빠르게
+}
 
 //event handling
 document.addEventListener("keydown", e => { // keycode 추출
@@ -142,6 +156,9 @@ document.addEventListener("keydown", e => { // keycode 추출
             break;
         case 38:
             changeDirection()
+            break;
+        case 32:
+            dropBlock()
             break;
         default :
             break;

@@ -36,3 +36,18 @@ body{ /*이렇게 하면 넘치는 부분에 스크롤이 생기지 않음*/
 .tree{
     background: #67c23a;
 }
+.bar{
+    background: salmon;
+}
+.zee{
+    background: #e6a23c;
+}
+.square{
+    background: brown;
+}
+.elLeft{
+    background: #8e44ad;
+}
+.elRight{
+    background: #16a085;
+}
