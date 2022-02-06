@@ -1,9 +1,11 @@
-//DOM
+
 import BLOCKS from "./blocks.js"
 
-
+//DOM
 const playground = document.querySelector(".playground > ul")
-
+const gameText = document.querySelector(".game-text")
+const scoreDisplay = document.querySelector(".score")
+const restartButton = document.querySelector("game-text > button")
 //Settings
 const GAME_ROWs = 20
 const GAME_COLS = 10
@@ -73,8 +75,12 @@ function renderBlocks(moveType= "") { // 블럭 그림
             target.classList.add(type, "moving")// 타겟의 상태가 ture일 때만 새로운 블럭 추가
         } else {
             tempMovingItem = {...movingItem} // false의 경우
+            if (moveType === "retry") {
+                clearInterval(downIntervla)
+                showGameOverText()
+            }
             setTimeout(() => { //이벤트 스택이 넘쳐버리는 걸 방지 call stack size exceeded 방지
-                renderBlocks()
+                renderBlocks("retry") // 새로 시작하는 기능 줄 것임
                 if (moveType === "top") { //떨어지는 중에 없는 화면으로 나가버리면
                     seizeBlock() // 고정시키는 함수실행
                 }
@@ -94,8 +100,28 @@ function seizeBlock() { // 더이상 내려갈 곳이 없을 때 블럭에서 mo
         moving.classList.remove("moving")
         moving.classList.add("seized") // 이 요소를 가졌다면~
     })
+    checkMatch()// 줄이 맞으면 칸을 지워주는 기능
     generateNewBlock()
 }
+function checkMatch() {
+    const childNodes = playground.childNodes // 전체의 childNodes를 가져올 것임
+    childNodes.forEach(child => {
+        let matched = true
+        child.children[0].childNodes.forEach(li => { // 하나의 li가 될 것임
+            if(!li.classList.contains("seized")){
+                matched = false
+            }
+        })
+        if(matched){
+            child.remove()
+            prependNewLine()
+            score++
+            scoreDisplay.innerText = score
+        }
+    })
+}
+
+
 function generateNewBlock() { // seized끝나면 새로운 블럭이 생기게 됨
 
     clearInterval(downIntervla) // 기존에 downIntervla있다면 clear 해줌
@@ -141,6 +167,9 @@ function dropBlock() { // 스페이스바를 누르면 한번에 내려오는 �
         moveBlock("top", 1)
     }, 10) // 속도를 엄청빠르게
 }
+function showGameOverText() {
+    gameText.style.display = "flex"
+}
 
 //event handling
 document.addEventListener("keydown", e => { // keycode 추출
@@ -164,3 +193,9 @@ document.addEventListener("keydown", e => { // keycode 추출
             break;
     }
 })
+
+// restartButton.addEventListener("click", (e) => {
+//     playground.innerHTML = ""
+//     gameText.style.display = "none"
+//     init()
+// })
